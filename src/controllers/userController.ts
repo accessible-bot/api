@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateUserDTO } from "../dtos/createUserDTO";
-// import { User } from "../models/User";
-import { Prisma, PrismaClient, UserType } from "@prisma/client";
+import { UserType } from "@prisma/client";
+import prisma from "../prisma";
 import { LoginDTO } from "../dtos/loginDTO";
 import bcrypt from "bcryptjs";
 import { plainToClass } from "class-transformer";
@@ -10,8 +10,6 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
-
-const prisma = new PrismaClient();
 
 export class UserController {
   static async login(
@@ -108,7 +106,7 @@ export class UserController {
           birthDate: formattedBirthDate,
           userType: userDTO.userType as UserType
         },
-        
+
       });
 
       res.status(201).json(newUser);

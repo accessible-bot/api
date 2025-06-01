@@ -1,36 +1,28 @@
 import express, { Request, Response } from 'express';
-import { sendPrompt } from '../services/chatService';
-import { ChatModel } from '../models/Message';
+import prisma from '../prisma';
 
 const chatRoutes = express.Router();
-
-chatRoutes.post('/chat', async (req: Request, res: Response) => {
-  const { publico, pergunta } = req.body;
-
-  try {
-    const start = Date.now();
-    const resposta = await sendPrompt(publico, pergunta);
-    console.log(`Tempo de resposta: ${Date.now() - start}ms`);
-
-    res.json({ resposta });
-  } catch (error) {
-    console.error('Erro ao processar pergunta:', error);
-    res.status(500).json({ error: 'Erro no servidor' });
-  }
-});
 
 chatRoutes.get('/chat/history/:userId', async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.params;
 
   try {
-    const chat = await ChatModel.findOne({ userId });
-
-    if (!chat) {
-      res.status(404).json({ error: 'Histórico não encontrado para este usuário.' });
-      return;
+   const historics = await prisma.historic.findMany({
+    where: {
+      userId: userId
+    },
+    include : {
+      messages: true
     }
+   })
 
-    res.json({ messages: chat.messages });
+   if (historics.length == 0) {
+    res.status(404).json( {error: 'Nenhum histórico encontrado para este usuário.'});
+    return;
+   }
+
+   res.status(200).json(historics);
+
   } catch (error) {
     console.error('Erro ao buscar histórico:', error);
     res.status(500).json({ error: 'Erro interno no servidor.' });

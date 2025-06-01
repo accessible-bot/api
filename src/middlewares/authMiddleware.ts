@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { IUser } from '../models/User';
+import { PrismaClient, User } from '@prisma/client';
 
 interface IRequest extends Request {
-  user?: IUser;
+  user?: User;
 }
 
 export function authMiddleware(req: IRequest, res: Response, next: NextFunction): void {
@@ -17,7 +17,7 @@ export function authMiddleware(req: IRequest, res: Response, next: NextFunction)
   const [, token] = authHeader.split(' ');
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as IUser;  
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as User;  
     req.user = decoded;
     next();
   } catch (error) {

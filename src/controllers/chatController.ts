@@ -1,6 +1,6 @@
 import { WebSocketServer, WebSocket, Data } from 'ws';
 import { PublicoKey, sendPrompt } from '../services/chatService';
-import { ChatModel } from '../models/Message';
+import prisma from '../prisma';
 
 const MAX_MESSAGES = 50;
 
@@ -17,9 +17,15 @@ export class ChatController {
     this.wss = new WebSocketServer({ server });
 
     this.wss.on('connection', (ws: WebSocket) => {
+      let currentUserId: string | null = null
+      let currentHistoricId: string | null = null
+
+      console.log("Cliente conectado via WebSocket!")
+      
       ws.on('message', async (data: Data) => {
         try {
           const rawMsg: ClientMessage = JSON.parse(data.toString());
+          currentUserId = rawMsg.userId;
 
           if (
             !rawMsg.userId ||
@@ -32,32 +38,70 @@ export class ChatController {
             return;
           }
 
-          let chat = await ChatModel.findOne({ userId: rawMsg.userId });
-          if (!chat) {
-            chat = new ChatModel({ userId: rawMsg.userId, messages: [] });
-          }
-
-          chat.messages.push({
-            role: 'user',
-            content: rawMsg.pergunta,
-            createdAt: new Date(),
+          const userExists = await prisma.user.findUnique({
+            where: { id: rawMsg.userId },
           });
 
-          if (chat.messages.length > MAX_MESSAGES) {
-            chat.messages = chat.messages.slice(chat.messages.length - MAX_MESSAGES);
+          if (!userExists) {
+            ws.send(JSON.stringify({ error: 'Usuário não encontrado.' }));
+            return;
           }
+
+          let chatHistoric = await prisma.historic.findFirst({
+            where: {
+              userId: rawMsg.userId,
+              terminated: false,
+            },
+            include: {
+              messages: {
+                orderBy: { createdAt: 'asc' },
+              },
+            },
+          });
+
+          if (!chatHistoric) {
+            chatHistoric = await prisma.historic.create({
+              data: {
+                userId: rawMsg.userId,
+                endedAt: new Date(),
+                terminated: false,
+              },
+              include: {
+                messages: true,
+              },
+            });
+          }
+
+          currentHistoricId = chatHistoric.historicId;
+
+          await prisma.message.create({
+            data: {
+              role: 'user',
+              content: rawMsg.pergunta,
+              createdAt: new Date(),
+              historic: {
+                connect: { historicId: chatHistoric.historicId },
+              },
+            },
+          });
 
           const resposta = await sendPrompt(rawMsg.publico, rawMsg.pergunta);
 
-          chat.messages.push({
-            role: 'assistant',
-            content: resposta,
-            createdAt: new Date(),
+          await prisma.message.create({
+            data: {
+              role: 'assistant',
+              content: resposta,
+              createdAt: new Date(),
+              historic: {
+                connect: { historicId: chatHistoric.historicId },
+              },
+            },
           });
 
-          chat.updatedAt = new Date();
-
-          await chat.save();
+          await prisma.historic.update({
+            where: { historicId: chatHistoric.historicId },
+            data: { endedAt: new Date() },
+          });
 
           ws.send(
             JSON.stringify({
@@ -66,10 +110,25 @@ export class ChatController {
             })
           );
         } catch (error) {
-          console.error('Erro no WS chat:', error);
-          ws.send(JSON.stringify({ error: 'Erro no processamento da mensagem' }));
-        }
+            console.error('Erro no WS chat:', error);
+            ws.send(JSON.stringify({ error: 'Erro no processamento da mensagem' }));
+          }   
       });
+
+      ws.on('close', async () => {
+        if (currentHistoricId) {
+          console.log(`WebSocket encerrado. Atualizando histórico ${currentHistoricId} como terminado.`)
+
+          await prisma.historic.update( {
+            where: { historicId: currentHistoricId},
+            data: {
+              terminated: true,
+              endedAt: new Date()
+            }
+          })
+        }
+      })
+
     });
   }
 }
