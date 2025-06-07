@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket, Data } from 'ws';
-import { isAboutAutism, PublicoKey, sendPrompt } from '../services/chatService';
+import { generateSummary, PublicoKey, sendPrompt } from '../services/chatService';
 import prisma from '../prisma';
 
 const MAX_MESSAGES = 50;
@@ -85,51 +85,32 @@ export class ChatController {
             },
           });
 
-          if (!isAboutAutism(rawMsg.pergunta)) {
-            const respostaPadrao = 'Desculpe, não consigo lhe ajudar com isso. Reformule sua pergunta.'
+          const resposta = await sendPrompt(rawMsg.publico, rawMsg.pergunta);
 
-            await prisma.message.create({
-              data: {
-                role: 'assistant',
-                content: respostaPadrao,
-                createdAt: new Date(),
-                historic: {
-                  connect: { historicId: chatHistoric.historicId }
-                },
-              }
-            });
-
-            ws.send(JSON.stringify({ role: 'assistant', content: respostaPadrao}));
-            return;
-          }
-
-          else {
-            const resposta = await sendPrompt(rawMsg.publico, rawMsg.pergunta);
-
-            await prisma.message.create({
-              data: {
-                role: 'assistant',
-                content: resposta,
-                createdAt: new Date(),
-                historic: {
-                  connect: { historicId: chatHistoric.historicId },
-                },
+          await prisma.message.create({
+            data: {
+              role: 'assistant',
+              content: resposta,
+              createdAt: new Date(),
+              historic: {
+                connect: { historicId: chatHistoric.historicId },
               },
-            });
-      
-            await prisma.historic.update({
-              where: { historicId: chatHistoric.historicId },
-              data: { endedAt: new Date() },
-            });
+            },
+          });
+    
+          await prisma.historic.update({
+            where: { historicId: chatHistoric.historicId },
+            data: { endedAt: new Date() },
+          });
 
-            ws.send(
-              JSON.stringify({
-                role: 'assistant',
-                content: resposta,
-              })
-            );
-          }
-          
+          ws.send(
+            JSON.stringify({
+              role: 'assistant',
+              content: resposta,
+            })
+          );
+
+
         } catch (error) {
             console.error('Erro no WS chat:', error);
             ws.send(JSON.stringify({ error: 'Erro no processamento da mensagem' }));
@@ -148,6 +129,25 @@ export class ChatController {
             }
           })
         }
+
+        const mensagens = await prisma.message.findMany({
+          where: { historicId: currentHistoricId!},
+          orderBy: {createdAt: 'asc'}
+        })
+
+        const primeiraPergunta = mensagens.find(m => m.role == 'user')?.content || '';
+        const resumo = await generateSummary(primeiraPergunta);
+
+        await prisma.conversationSummary.create({
+          data: {
+            summary: resumo,
+            historic: {
+              connect: { historicId: currentHistoricId! }
+            }
+          }
+        })
+
+
       })
 
     });

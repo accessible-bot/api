@@ -1,6 +1,5 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-import nlp from 'compromise';
 
 dotenv.config();
 
@@ -14,24 +13,6 @@ const publicos = {
   crianca: 'Responda de forma muito simples, amigável e fácil de entender para uma criança com TEA.'
 } as const;
 
-const TEA_KEYWORDS = new Set([
-  'autismo',
-  'tea',
-  'transtorno',
-  'sensorial',
-  'neurodivergente',
-  'neurodiversidade',
-  'espectro',
-  'acessibilidade',
-  'inclusão'
-])
-
-export function isAboutAutism(text: string): boolean {
-  const doc = nlp(text.toLowerCase());
-  const terms = doc.terms().out('array');
-
-  return terms.some((token: string) => TEA_KEYWORDS.has(token))
-}
 
 export type PublicoKey = keyof typeof publicos;
 
@@ -69,3 +50,39 @@ export async function sendPrompt(publicoKey: PublicoKey, pergunta: string): Prom
 
   return response.data.choices[0].message.content;
 }
+
+export async function generateSummary(text: string): Promise<string> {
+  if (!apiKey) {
+    throw new Error('API_KEY não está definida nas variáveis de ambiente.');
+  }
+
+  const contexto = `Tema: Transtorno do Espectro Autista\n\n${text}`;
+
+  const response = await axios.post(
+    'https://openrouter.ai/api/v1/chat/completions',
+    {
+      model: modelName,
+      messages: [
+        {
+          role: 'system',
+          content: `Gere um título muito curto (máximo de 6 palavras) que resuma a intenção da pergunta do usuário, sem responder ou interpretar o conteúdo. Foque apenas na ação ou objetivo da pergunta. Comece cada substantivo com letra maiúscula e sem pontuação final. Ignore qualquer explicação ou resposta.`
+
+        },
+        {
+          role: 'user',
+          content: contexto
+        }
+      ],
+      temperature: 0.3
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  return  response.data.choices[0].message.content.trim();
+}
+
