@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import nlp from 'compromise';
 
 dotenv.config();
 
@@ -12,6 +13,25 @@ const publicos = {
   professores: 'Responda de forma técnica e com orientações práticas para professores.',
   crianca: 'Responda de forma muito simples, amigável e fácil de entender para uma criança com TEA.'
 } as const;
+
+const TEA_KEYWORDS = new Set([
+  'autismo',
+  'tea',
+  'transtorno',
+  'sensorial',
+  'neurodivergente',
+  'neurodiversidade',
+  'espectro',
+  'acessibilidade',
+  'inclusão'
+])
+
+export function isAboutAutism(text: string): boolean {
+  const doc = nlp(text.toLowerCase());
+  const terms = doc.terms().out('array');
+
+  return terms.some((token: string) => TEA_KEYWORDS.has(token))
+}
 
 export type PublicoKey = keyof typeof publicos;
 
@@ -30,7 +50,7 @@ export async function sendPrompt(publicoKey: PublicoKey, pergunta: string): Prom
       messages: [
         {
           role: 'system',
-          content: 'Você é um assistente especializado em acessibilidade e inclusão para pessoas com TEA.'
+          content: 'Você é um assistente especializado em responder apenas a perguntas sobre acessibilidade e inclusão para pessoas com TEA. Caso suja uma pergunta fora desse contexto de qualquer um dos públicos, responda educadamente que não pode ajudar, e finalize a conversa.'
         },
         {
           role: 'user',

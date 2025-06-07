@@ -48,4 +48,6 @@ model Historic {
   terminated  Boolean
   userId      String
   user        User      @relation(fields: [userId], references: [id])
+  
 }
+

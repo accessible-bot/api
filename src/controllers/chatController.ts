@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket, Data } from 'ws';
-import { PublicoKey, sendPrompt } from '../services/chatService';
+import { isAboutAutism, PublicoKey, sendPrompt } from '../services/chatService';
 import prisma from '../prisma';
 
 const MAX_MESSAGES = 50;
@@ -80,35 +80,56 @@ export class ChatController {
               content: rawMsg.pergunta,
               createdAt: new Date(),
               historic: {
-                connect: { historicId: chatHistoric.historicId },
+                connect: { historicId: chatHistoric.historicId }
               },
             },
           });
 
-          const resposta = await sendPrompt(rawMsg.publico, rawMsg.pergunta);
+          if (!isAboutAutism(rawMsg.pergunta)) {
+            const respostaPadrao = 'Desculpe, não consigo lhe ajudar com isso. Reformule sua pergunta.'
 
-          await prisma.message.create({
-            data: {
-              role: 'assistant',
-              content: resposta,
-              createdAt: new Date(),
-              historic: {
-                connect: { historicId: chatHistoric.historicId },
+            await prisma.message.create({
+              data: {
+                role: 'assistant',
+                content: respostaPadrao,
+                createdAt: new Date(),
+                historic: {
+                  connect: { historicId: chatHistoric.historicId }
+                },
+              }
+            });
+
+            ws.send(JSON.stringify({ role: 'assistant', content: respostaPadrao}));
+            return;
+          }
+
+          else {
+            const resposta = await sendPrompt(rawMsg.publico, rawMsg.pergunta);
+
+            await prisma.message.create({
+              data: {
+                role: 'assistant',
+                content: resposta,
+                createdAt: new Date(),
+                historic: {
+                  connect: { historicId: chatHistoric.historicId },
+                },
               },
-            },
-          });
+            });
+      
+            await prisma.historic.update({
+              where: { historicId: chatHistoric.historicId },
+              data: { endedAt: new Date() },
+            });
 
-          await prisma.historic.update({
-            where: { historicId: chatHistoric.historicId },
-            data: { endedAt: new Date() },
-          });
-
-          ws.send(
-            JSON.stringify({
-              role: 'assistant',
-              content: resposta,
-            })
-          );
+            ws.send(
+              JSON.stringify({
+                role: 'assistant',
+                content: resposta,
+              })
+            );
+          }
+          
         } catch (error) {
             console.error('Erro no WS chat:', error);
             ws.send(JSON.stringify({ error: 'Erro no processamento da mensagem' }));
