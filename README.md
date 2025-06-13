@@ -1,4 +1,4 @@
-# 🤖 AutBot — Chatbot Inclusivo
+# AutBot — Chatbot Inclusivo
 
 AutBot é uma ferramenta web com um chatbot acessível e empático, desenvolvido para apoiar pais, cuidadores, professores e profissionais da educação que interagem com pessoas com Transtorno do Espectro Autista (TEA).
 
@@ -12,9 +12,6 @@ AutBot é uma ferramenta web com um chatbot acessível e empático, desenvolvido
 - Oferecer suporte informativo sobre rotinas, direitos e inclusão de pessoas com TEA.
 - Reduzir barreiras digitais com uma interface clara e inclusiva.
 - Armazenar histórico de interações por sessão ou conta de usuário.
----
-## 📌 Link para acesso
-🌐 [Acesse o AutBot](https://shiny-dragon-b0fdfe.netlify.app/)
 ---
 ## 🧩 Funcionalidades Principais
 - Login e cadastro com autenticação segura
