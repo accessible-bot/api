@@ -168,4 +168,50 @@ export class UserController {
       res.status(500).json({ message: "Erro ao atualizar usuário", error });
     }
   }
+
+  static async changePassword(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req as any).user.id;
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        res.status(400).json({ message: 'A senha atual e a nova senha são obrigatórias.' });
+        return;
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user || !user.password) {
+        res.status(404).json({ message: 'Usuário não encontrado.' });
+        return;
+      }
+
+      const isCurrentPasswordValid = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
+
+      if (!isCurrentPasswordValid) {
+        res.status(400).json({ message: 'A senha atual está incorreta.' });
+        return;
+      }
+
+      const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          password: newPasswordHash,
+        },
+      });
+
+      res.status(200).json({ message: 'Senha alterada com sucesso.' });
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao alterar senha", error });
+    }
+  }
 }
