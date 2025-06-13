@@ -1,127 +1,158 @@
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: Operações relacionadas a usuários
+ * name: Users
+ * description: Operações relacionadas a usuários
  */
 
 /**
  * @swagger
  * /users:
- *   post:
- *     summary: Cria um novo usuário
- *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [name, email, password, birthDate, userType]
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               birthDate:
- *                 type: string
- *                 format: date
- *               userType:
- *                 type: string
- *                 enum: [ADMIN, USER]
- *     responses:
- *       201:
- *         description: Usuário criado com sucesso
- *       400:
- *         description: Dados inválidos
+ * post:
+ * summary: Cria um novo usuário
+ * tags: [Users]
+ * requestBody:
+ * required: true
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * required: [name, email, password, birthDate, userType]
+ * properties:
+ * name:
+ * type: string
+ * email:
+ * type: string
+ * password:
+ * type: string
+ * birthDate:
+ * type: string
+ * format: date
+ * userType:
+ * type: string
+ * enum: [ADMIN, USER]
+ * responses:
+ * 201:
+ * description: Usuário criado com sucesso
+ * 400:
+ * description: Dados inválidos
  */
 
 /**
  * @swagger
  * /login:
- *   post:
- *     summary: Faz login e retorna um token JWT
- *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [email, password]
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login bem-sucedido
- *       401:
- *         description: Credenciais inválidas
+ * post:
+ * summary: Faz login e retorna um token JWT
+ * tags: [Users]
+ * requestBody:
+ * required: true
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * required: [email, password]
+ * properties:
+ * email:
+ * type: string
+ * password:
+ * type: string
+ * responses:
+ * 200:
+ * description: Login bem-sucedido
+ * 401:
+ * description: Credenciais inválidas
  */
 
 /**
  * @swagger
  * /users:
- *   get:
- *     summary: Retorna todos os usuários
- *     tags: [Users]
- *     responses:
- *       200:
- *         description: Lista de usuários
+ * get:
+ * summary: Retorna todos os usuários
+ * tags: [Users]
+ * responses:
+ * 200:
+ * description: Lista de usuários
  */
 
 /**
  * @swagger
  * /users/{id}:
- *   get:
- *     summary: Retorna um usuário pelo ID
- *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Usuário encontrado
- *       404:
- *         description: Usuário não encontrado
+ * get:
+ * summary: Retorna um usuário pelo ID
+ * tags: [Users]
+ * parameters:
+ * - in: path
+ * name: id
+ * required: true
+ * schema:
+ * type: string
+ * responses:
+ * 200:
+ * description: Usuário encontrado
+ * 404:
+ * description: Usuário não encontrado
  */
 
 /**
  * @swagger
  * /users/{id}:
- *   put:
- *     summary: Atualiza dados de um usuário
- *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Usuário atualizado
- *       404:
- *         description: Usuário não encontrado
+ * put:
+ * summary: Atualiza dados de um usuário
+ * tags: [Users]
+ * parameters:
+ * - in: path
+ * name: id
+ * required: true
+ * schema:
+ * type: string
+ * requestBody:
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * properties:
+ * name:
+ * type: string
+ * email:
+ * type: string
+ * password:
+ * type: string
+ * responses:
+ * 200:
+ * description: Usuário atualizado
+ * 404:
+ * description: Usuário não encontrado
+ */
+
+/**
+ * @swagger
+ * /users/password:
+ * put:
+ * summary: Altera a senha do usuário autenticado
+ * tags: [Users]
+ * security:
+ * - bearerAuth: []
+ * requestBody:
+ * required: true
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * required: [currentPassword, newPassword]
+ * properties:
+ * currentPassword:
+ * type: string
+ * description: A senha atual do usuário.
+ * newPassword:
+ * type: string
+ * description: A nova senha para o usuário.
+ * responses:
+ * 200:
+ * description: Senha alterada com sucesso
+ * 400:
+ * description: Dados inválidos ou senha atual incorreta
+ * 401:
+ * description: Não autorizado (token inválido ou ausente)
  */
 
 
@@ -138,5 +169,6 @@ userRoutes.post('/login', UserController.login);
 userRoutes.get('/users', UserController.getAll);
 userRoutes.get('/users/:id', authMiddleware, UserController.getUser);
 userRoutes.put('/users/:id', authMiddleware, UserController.update);
+userRoutes.put('/users/password', authMiddleware, UserController.changePassword);
 
 export default userRoutes;
