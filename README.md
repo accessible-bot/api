@@ -6,7 +6,7 @@ AutBot é uma ferramenta web com um chatbot acessível e empático, desenvolvido
 
 Acesse a documentação completa do projeto com telas e detalhes técnicos:
 
-👉 [Documentação Técnica (PDF)](documentacao/chatbot_documentacao.pdf)
+👉 [Documentação Técnica (PDF)](documentacao/autbot_documentacao.pdf)
 
 ---
 ## 🧠 Sobre o Projeto
