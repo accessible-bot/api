@@ -2,11 +2,16 @@
 
 AutBot é uma ferramenta web com um chatbot acessível e empático, desenvolvido para apoiar pais, cuidadores, professores e profissionais da educação que interagem com pessoas com Transtorno do Espectro Autista (TEA).
 
-## 📄 Documentação Técnica
+## 📄 Documentação Técnica  
+Acesse a documentação completa do projeto com telas e detalhes técnicos:  
 
-Acesse a documentação completa do projeto com telas e detalhes técnicos:
+👉 [Documentação Técnica (PDF)](https://drive.google.com/drive/folders/1POj2_MXIiOHj52QCfX_pzs1y8hw28Tgx?usp=drive_link)  
 
-👉 [Documentação Técnica (PDF)](documentacao/autbot_documentacao.pdf)
+## 📚 Versão LaTeX da Documentação
+
+Você também pode visualizar a versão da documentação técnica escrita em LaTeX através do Overleaf:
+
+👉 [Acessar projeto no Overleaf (LaTeX)](https://pt.overleaf.com/read/cmjryxwjdbkt#be8ac4)
 
 ---
 ## 🧠 Sobre o Projeto
