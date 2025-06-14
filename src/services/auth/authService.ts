@@ -2,6 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const prisma = new PrismaClient();
 
@@ -34,7 +37,7 @@ export const requestPasswordReset = async (email: string) => {
         },
     });
 
-    const resetUrl = `http://SEU_CLIENT_URL/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.CLIENTE_URL}/alterar-senha/${resetToken}`;
     
     const mailOptions = {
         from: `ChatBot Acessível <${process.env.EMAIL_FROM}>`,
