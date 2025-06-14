@@ -2,11 +2,16 @@
 
 AutBot é uma ferramenta web com um chatbot acessível e empático, desenvolvido para apoiar pais, cuidadores, professores e profissionais da educação que interagem com pessoas com Transtorno do Espectro Autista (TEA).
 
-## 📄 Documentação Técnica
+## 📄 Documentação Técnica  
+Acesse a documentação completa do projeto com telas e detalhes técnicos:  
 
-Acesse a documentação completa do projeto com telas e detalhes técnicos:
+👉 [Documentação Técnica (PDF)](https://drive.google.com/drive/folders/1POj2_MXIiOHj52QCfX_pzs1y8hw28Tgx?usp=drive_link)  
 
-👉 [Documentação Técnica (PDF)](documentacao/autbot_documentacao.pdf)
+## 📚 Versão LaTeX da Documentação
+
+Você também pode visualizar a versão da documentação técnica escrita em LaTeX através do Overleaf:
+
+👉 [Acessar projeto no Overleaf (LaTeX)](https://pt.overleaf.com/read/cmjryxwjdbkt#be8ac4)
 
 ---
 ## 🧠 Sobre o Projeto
@@ -28,16 +33,19 @@ Acesse a documentação completa do projeto com telas e detalhes técnicos:
 - Mensagens de erro claras e responsivas
 ---
 ## 🛠️ Tecnologias Utilizadas
-| Camada | Tecnologia |
-|----------------|-------------------------------|
-| Frontend | React.js |
-| Backend | Node.js + Express |
-| IA/Chatbot | LLM (Meta AI — LLAMA) |
-| Banco de Dados | PostgreSQL |
-| Infraestrutura | Docker |
-| Design | Figma |
-| Gestão | Jira |
-| Versionamento | GitHub |
+
+| Camada             | Tecnologia                                               |
+|--------------------|----------------------------------------------------------|
+| **Frontend**        | React.js → **Versão:** 19.1.0                            |
+| **Backend**         | Node.js → **Versão:** 20.19.2<br>Express → **Versão:** 5.1.0 |
+| **IA / Chatbot**    | LLM (Meta AI — LLAMA) → **Modelo:** meta-llama/llama-3.2-3b-instruct |
+| **Banco de Dados**  | PostgreSQL → **Versão:** 16 (via Docker)                |
+| **Infraestrutura**  | Docker → **Versão:** 25.0.3                              |
+| **Design**          | Figma                                                    |
+| **Gestão**          | Jira                                                     |
+| **Versionamento**   | GitHub                                                   |
+| **npm**   | **Versão:** 10.8.2                                                 |
+| **git**   | 2.41.0.windows.1                                                    |
 ---
 ## 📐 Arquitetura do Sistema (resumo)
 - Interface web acessível (React)
@@ -64,6 +72,7 @@ Todas as histórias de usuário estão documentadas com critérios de aceitaçã
 ---
 ## 🔑 Variáveis de Ambiente (.env)
 Antes de executar o projeto, é necessário preencher as variáveis de ambiente em um arquivo `.env`, que pode ser criado com base no `.env.example` disponível no repositório.
+
 As principais variáveis incluem:
 - Chave de API do **OpenRouter**
 - Token de acesso do **Hugging Face**
@@ -95,6 +104,15 @@ Execute o comando:
 docker-compose up -d
 ```
 Isso subirá um container com o PostgreSQL pronto para uso conforme as configurações definidas no `docker-compose.yml`.
+
+#### Pra entrar no terminal do contêiner:  
+docker exec -it autbot_postgres bash
+
+
+#### Para entrar no prompt do PostgreSQL: 
+psql -U <usuario> -d <nome_do_banco>
+(DE ACORDO COM O .ENV)
+
 ### 🚀 5. Iniciar o projeto
 ```bash
 npm start
