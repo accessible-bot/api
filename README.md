@@ -2,6 +2,12 @@
 
 AutBot é uma ferramenta web com um chatbot acessível e empático, desenvolvido para apoiar pais, cuidadores, professores e profissionais da educação que interagem com pessoas com Transtorno do Espectro Autista (TEA).
 
+## 📄 Documentação Técnica
+
+Acesse a documentação completa do projeto com telas e detalhes técnicos:
+
+👉 [Documentação Técnica (PDF)](documentacao/chatbot_documentacao.pdf)
+
 ---
 ## 🧠 Sobre o Projeto
 - 🔍 Fornece respostas automatizadas com base em **documentos oficiais** (leis, guias, boas práticas).
@@ -93,6 +99,14 @@ Isso subirá um container com o PostgreSQL pronto para uso conforme as configura
 ```bash
 npm start
 ```
-A aplicação estará disponível em `http://localhost:3000`.
+A aplicação estará disponível em http://localhost:3000.
 ---
+## 📌 Propostas Adicionais e Futuras Melhorias
+
+- 🔊 **Leitura por voz**: oferecer opção para que o chatbot leia suas respostas em voz alta, ampliando a acessibilidade.  
+- 📱 **Prototipagem Mobile**: adaptação da interface para uso em dispositivos móveis, com foco em usabilidade e acessibilidade móvel.
+- 🔗 Protótipos da versão mobile no Figma:
+[Ver protótipos do AutBot](https://www.figma.com/design/0nlZssKjrIkx4VJd3RAaeh/Engenharia-de-Sof.-Aces.?node-id=194-1950&t=jeKstmCmjlX3O1Sb-0)
+---
+
 
