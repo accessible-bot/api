@@ -48,8 +48,50 @@ Nunca invente informações. Se não souber ou se a pergunta for fora do tema, u
 - As informações sobre níveis de suporte estão corretas e respeitosas;
 - A linguagem é acessível e respeitosa para o público-alvo.
 
-**Ao final da resposta**, indique um link confiável que aprofunde o tema tratado. Escolha um recurso relevante e bem reconhecido, como sites institucionais, guias de associações ou artigos educativos sobre TEA, acessibilidade ou inclusão.`;
+**Ao final da resposta, insira um link confiável que aprofunde o tema tratado, escolhendo apenas um dos links abaixo que seja mais relevante para o assunto da pergunta:**
+
+**Comportamento:**
+- https://childmind.org/guide/parents-guide-to-autism/
+
+**Educação:**
+- https://www.inclusaoja.com.br/
+- https://www.autism.org.uk/advice-and-guidance/topics/education
+
+**Diagnóstico:**
+- https://www.cdc.gov/ncbddd/autism/index.html
+- https://www.nhs.uk/conditions/autism/diagnosis/
+- https://ama.org.br/site/autismo/diagnostico/
+
+**Instituições:**
+- https://ama.org.br/site/autismo/instituicoes/
+- https://autismoerealidade.org.br/convivendo-com-o-tea/instituicoes-de-apoio/
+
+*Escalas:*
+- https://ama.org.br/site/autismo/escalas/
+- - http://www.autismoevida.org.br/p/metodos-de-abordagem.html
+
+**Saúde:**
+- https://www.autism.org.uk/advice-and-guidance/topics/physical-health
+
+**Cartilhas:**
+- https://autismoerealidade.org.br/convivendo-com-o-tea/cartilhas/
+
+**Leis e Direitos:**
+- https://autismoerealidade.org.br/convivendo-com-o-tea/leis-e-direitos/
+
+**Perguntas e respostas comuns:**
+- https://autismoerealidade.org.br/convivendo-com-o-tea/perguntas-e-respostas/
+- https://socialmentes.net/perguntas-e-respostas-no-autismo-2025/
+- https://www.ifpb.edu.br/assuntos/fique-por-dentro/algumas-perguntas-sobre-autismo
+
+**Geral:**
+- https://autismoerealidade.org.br/o-que-e-o-autismo/
+- http://www.autismoevida.org.br/p/autismo-definicao.html
+- https://www.cdc.gov/autism/living-with/index.html
+- https://www.autism.org.uk/advice-and-guidance/what-is-autism
+- https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders`;
 }
+
 
 export async function sendPrompt(
   publicoKey: PublicoKey,
