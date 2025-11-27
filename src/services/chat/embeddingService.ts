@@ -28,7 +28,7 @@ export async function getSimilarityScores(sourceSentence: string, sentences: str
   const cleanSentences = sentences.map(cleanText);
 
   const response = await axios.post(
-    'https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2',
+    'https://router.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2',
     {
       inputs: {
         source_sentence: cleanSource,

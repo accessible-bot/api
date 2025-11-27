@@ -21,7 +21,14 @@ const app = express();
 
 prisma.$connect()
   .then(() => console.log('Conectado ao PostgreSQL via Prisma!'))
-  .catch(err => console.error('Erro na conexão Prisma → PostgreSQL:', err));
+  .catch((err: unknown) => {
+    if (err instanceof Error) {
+      console.error('Erro na conexão Prisma → PostgreSQL:', err.message);
+    } else {
+      console.error('Erro na conexão Prisma → PostgreSQL:', err);
+    }
+  });
+
 
 app.use(cors({
   origin: '*',
